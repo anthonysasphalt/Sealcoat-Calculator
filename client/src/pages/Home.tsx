@@ -119,8 +119,17 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
+            {/* Logo */}
+            <div className="flex justify-center mb-6">
+              <img
+                src="/logo.webp"
+                alt="Anthony's Asphalt Logo"
+                className="h-16 sm:h-20 object-contain drop-shadow-lg"
+              />
+            </div>
+            
             {/* Brand */}
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-4 justify-center">
               <div className="w-10 h-10 rounded-lg bg-gold flex items-center justify-center">
                 <Calculator className="w-5 h-5 text-black" />
               </div>
