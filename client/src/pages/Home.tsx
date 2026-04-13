@@ -16,12 +16,14 @@ import {
   BarChart3,
   Calculator,
   RotateCcw,
+  Zap,
 } from "lucide-react";
 import CostSection from "@/components/CostSection";
 import CurrencyInput from "@/components/CurrencyInput";
 import ResultsPanel from "@/components/ResultsPanel";
 import MobileResultsBar from "@/components/MobileResultsBar";
 import MarginAdjuster from "@/components/MarginAdjuster";
+import BeginnerCalculator from "@/components/BeginnerCalculator";
 import {
   type CalculatorInputs,
   DEFAULT_INPUTS,
@@ -31,6 +33,7 @@ import {
 const HERO_IMAGE = "https://private-us-east-1.manuscdn.com/sessionFile/KEqTjLbbXvvmRu9u7TNTIP/sandbox/G8EJMX4GUBdySSN94VM8AS-img-1_1771364017000_na1fn_aGVyby1hc3BoYWx0.jpg?x-oss-process=image/resize,w_1920,h_1920/format,webp/quality,q_80&Expires=1798761600&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9wcml2YXRlLXVzLWVhc3QtMS5tYW51c2Nkbi5jb20vc2Vzc2lvbkZpbGUvS0VxVGpMYmJYdnZtUnU5dTdUTlRJUC9zYW5kYm94L0c4RUpNWDRHVUJkeVNTTjk0Vk04QVMtaW1nLTFfMTc3MTM2NDAxNzAwMF9uYTFmbl9hR1Z5YnkxaGMzQm9ZV3gwLmpwZz94LW9zcy1wcm9jZXNzPWltYWdlL3Jlc2l6ZSx3XzE5MjAsaF8xOTIwL2Zvcm1hdCx3ZWJwL3F1YWxpdHkscV84MCIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiQVdTOkVwb2NoVGltZSI6MTc5ODc2MTYwMH19fV19&Key-Pair-Id=K2HSFNDJXOU9YS&Signature=JWGsBG6ielpyTo-mbCulgCmgevYHBYW5Rl5t3~~fW~0qsHHzZlb6ka5HHtBULd3bR4KJAAcTeGBMwuYnKnnq3sIBvRpvm6bP3RtWMcikqwX0yegQ00z1VA~Szku7OY1ABbmWzYOxJonewfJtZv9Ql4qc4r2-lz8eYlNhQt8NynVPx4YQgsgPY9CfOe57jyAJ6O1g2lvykvMS6o96yxIWL-qIAEBsD6ggELu-k7uOE8iTZ2-OGDpv9m7xIRYTIMxmcSHPPN3ks~AyDyq0G2-T6AVJ5c16tlviM1KH7GmSZ3dmbUkDgjfvLwLG5p2zoSJjWiRuEgxC4xMs9ssjaBGuYA__";
 
 export default function Home() {
+  const [isBeginnerMode, setIsBeginnerMode] = useState(false);
   const [inputs, setInputs] = useState<CalculatorInputs>(
     () => structuredClone(DEFAULT_INPUTS)
   );
@@ -165,23 +168,62 @@ export default function Home() {
 
       {/* ===== MAIN CONTENT ===== */}
       <main className="container py-8 lg:py-10">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
-          {/* LEFT — Form Sections */}
-          <div className="flex-1 lg:max-w-[58%] space-y-4">
-            {/* Reset button */}
-            <div className="flex items-center justify-between mb-2">
-              <p className="text-sm text-muted-foreground">
-                Fill in your costs below. Defaults are pre-loaded as a starting point.
-              </p>
-              <button
-                type="button"
-                onClick={resetToDefaults}
-                className="flex items-center gap-1.5 text-xs text-[oklch(0.55_0_0)] hover:text-gold transition-colors"
-              >
-                <RotateCcw className="w-3.5 h-3.5" />
-                Reset
-              </button>
+        {/* Mode Toggle */}
+        <div className="mb-6 flex items-center gap-3 p-4 bg-background/50 border border-border/50 rounded-lg flex-wrap">
+          <button
+            onClick={() => setIsBeginnerMode(false)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+              !isBeginnerMode
+                ? "bg-gold text-black font-semibold"
+                : "bg-background text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <BarChart3 className="w-4 h-4" />
+            Professional Mode
+          </button>
+          <button
+            onClick={() => setIsBeginnerMode(true)}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
+              isBeginnerMode
+                ? "bg-gold text-black font-semibold"
+                : "bg-background text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            <Zap className="w-4 h-4" />
+            Beginner Mode
+          </button>
+          <div className="flex-1" />
+          <p className="text-xs text-muted-foreground">
+            {isBeginnerMode ? "Simple job-based pricing" : "Full overhead breakdown"}
+          </p>
+        </div>
+
+        {isBeginnerMode ? (
+          /* ===== BEGINNER MODE ===== */
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
+            <div className="flex-1 lg:max-w-[58%]">
+              <BeginnerCalculator />
             </div>
+          </div>
+        ) : (
+          /* ===== PROFESSIONAL MODE ===== */
+          <div className="flex flex-col lg:flex-row gap-8 lg:gap-10">
+            {/* LEFT — Form Sections */}
+            <div className="flex-1 lg:max-w-[58%] space-y-4">
+              {/* Reset button */}
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-sm text-muted-foreground">
+                  Fill in your costs below. Defaults are pre-loaded as a starting point.
+                </p>
+                <button
+                  type="button"
+                  onClick={resetToDefaults}
+                  className="flex items-center gap-1.5 text-xs text-[oklch(0.55_0_0)] hover:text-gold transition-colors"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                  Reset
+                </button>
+              </div>
 
             {/* ===== SECTION 1: Job Volume ===== */}
             <CostSection
@@ -559,10 +601,30 @@ export default function Home() {
             </p>
           </div>
         </div>
-      </footer>
+        
+        {/* ===== FOOTER ===== */}
+        <footer className="border-t border-border/30 bg-background/50 py-6 mt-12">
+          <div className="container">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded bg-gold flex items-center justify-center">
+                  <Calculator className="w-3.5 h-3.5 text-black" />
+                </div>
+                <span className="text-sm font-semibold text-[oklch(0.6_0_0)]">
+                  Anthony's Asphalt
+                </span>
+              </div>
+              <p className="text-xs text-[oklch(0.45_0_0)] text-center">
+                This calculator provides estimates based on your inputs. Actual costs may vary by region, season, and job conditions.
+              </p>
+            </div>
+          </div>
+        </footer>
+        )}
+      </main>
 
       {/* Mobile floating results bar */}
-      <MobileResultsBar breakdown={breakdown} />
+      {!isBeginnerMode && <MobileResultsBar breakdown={breakdown} />}
     </div>
   );
 }
